@@ -6,11 +6,6 @@ import (
 )
 
 func AuthRoutes(router *gin.RouterGroup) {
-	router.POST("/login", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"status": "ok",
-		})
-	})
-
+	router.POST("/login", controllers.Login)
 	router.POST("/register", controllers.Register)
 }
