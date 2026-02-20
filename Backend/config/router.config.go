@@ -17,5 +17,5 @@ func Router() {
 	})
 
 	routes.AuthRoutes(router.Group("/auth"))
-	router.Run(":9000")
+	router.Run(":9090")
 }
