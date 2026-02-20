@@ -8,4 +8,8 @@ func AuthRoutes(router *gin.RouterGroup) {
 			"status": "ok",
 		})
 	})
+
+	router.POST("/register", func(c *gin.Context) {
+
+	})
 }

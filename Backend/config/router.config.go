@@ -3,7 +3,7 @@ package config
 import (
 	"net/http"
 
-	"github.com/dhank77/hrai/module/auth/routes"
+	"github.com/dhank77/hrai/module/users/routes"
 	"github.com/gin-gonic/gin"
 )
 
