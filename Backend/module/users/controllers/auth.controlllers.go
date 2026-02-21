@@ -9,28 +9,37 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var user models.User
-
 func Register(c *gin.Context) {
+	var user models.User
+	if err := c.ShouldBind(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  false,
+			"message": "Invalid request, " + err.Error(),
+		})
+		return
+	}
 
-	c.ShouldBind(&user)
-	user.Password, _ = helpers.HashPassword(user.Password)
+	hashedPassword, _ := helpers.HashPassword(user.Password)
+	user.Password = hashedPassword
 
 	database.DB.Create(&user)
 
 	if user.ID == 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  false,
 			"message": "Failed to create user",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
 		"message": "User created successfully",
 	})
 }
 
 func Login(c *gin.Context) {
+	var user models.User
 	email := c.PostForm("email")
 	password := c.PostForm("password")
 
@@ -38,20 +47,26 @@ func Login(c *gin.Context) {
 
 	if user.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{
+			"status":  false,
 			"message": "User not found",
 		})
 		return
 	}
 
-	if helpers.VerifyPassword(password, user.Password) != nil {
+	if err := helpers.VerifyPassword(password, user.Password); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
+			"status":  false,
 			"message": "Invalid password",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "User logged in successfully",
-	})
+	user.Password = "[PASSWORD]"
+	token, _ := helpers.GenerateJWT(user)
 
+	c.JSON(http.StatusOK, gin.H{
+		"status": true,
+		"user":   user,
+		"token":  token,
+	})
 }
