@@ -18,5 +18,7 @@ func Router() {
 	})
 
 	routes.AuthRoutes(router.Group("/auth"))
+	routes.UserRoutes(router.Group("/user"))
+
 	router.Run(":" + os.Getenv("APP_PORT"))
 }
