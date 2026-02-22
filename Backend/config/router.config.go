@@ -2,6 +2,7 @@ package config
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/dhank77/hrai/module/users/routes"
 	"github.com/gin-gonic/gin"
@@ -17,5 +18,5 @@ func Router() {
 	})
 
 	routes.AuthRoutes(router.Group("/auth"))
-	router.Run(":9090")
+	router.Run(":" + os.Getenv("APP_PORT"))
 }
